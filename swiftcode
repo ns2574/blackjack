@@ -1,0 +1,188 @@
+// Niela Sultana 
+//2 days late, no extention, half credit 
+
+
+import UIKit
+
+enum Power: Int {
+    case Ace = 1
+    case Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten
+    case Jack, Queen, King
+    func itsPower() -> Int {
+        switch self {
+        case .Ace:
+            return 1
+        case .Jack:
+            return 10
+        case .Queen:
+            return 10
+        case .King:
+            return 10
+        default:
+            return self.toRaw()
+        }
+    }
+    func description() -> String {
+        switch self {
+        case .Ace:
+            return "Ace"
+        case .Jack:
+            return "Jack"
+        case .Queen:
+            return "Queen"
+        case .King:
+            return "King"
+        default:
+            return String(self.toRaw())
+        }
+    }
+}
+
+
+enum Suit {
+    case Spades, Hearts, Diamonds, Clubs
+    func simpleDescription() -> String {
+        switch self{
+        case .Spades:
+            return "Spades"
+        case .Hearts:
+            return "Hearts"
+        case .Diamonds:
+            return "Diamonds"
+        case .Clubs:
+            return "Clubs"
+        }
+        
+    }
+}
+
+
+
+struct Card {
+    var power:Power
+    var suit:Suit
+    func description (){
+        println("\(power.description()) of \(suit.simpleDescription())")
+    }
+}
+
+
+struct Deck{
+    var aDeck:[Card] = [Card(power: Power.Ace, suit: Suit.Spades),Card(power:Power.Two, suit: .Spades),
+    Card(power:Power.Three, suit: .Spades),Card(power:Power.Four, suit: .Spades),
+    Card(power:Power.Five, suit: .Spades),Card(power:Power.Six, suit: .Spades),
+    Card(power:Power.Seven, suit: .Spades),Card(power:Power.Eight, suit: .Spades),
+    Card(power:Power.Nine, suit: .Spades),Card(power:Power.Ten, suit: .Spades),
+    Card(power:Power.Jack, suit: .Spades),Card(power:Power.Queen, suit: .Spades),
+    Card(power:Power.King, suit: .Spades),Card(power:Power.Ace, suit: .Hearts),
+    Card(power:Power.Two, suit: .Hearts),Card(power:Power.Three, suit: .Hearts),
+    Card(power:Power.Four, suit: .Hearts),Card(power:Power.Five, suit: .Hearts),
+    Card(power:Power.Six, suit: .Hearts),Card(power:Power.Seven, suit: .Hearts),
+    Card(power:Power.Eight, suit: .Hearts),Card(power:Power.Nine, suit: .Hearts),
+    Card(power:Power.Ten, suit: .Hearts),Card(power:Power.Jack, suit: .Hearts),
+    Card(power:Power.Queen, suit: .Hearts),Card(power:Power.King, suit: .Hearts),
+    Card(power:Power.Ace, suit: .Clubs),Card(power:Power.Two, suit: .Clubs),
+    Card(power:Power.Three, suit: .Clubs),Card(power:Power.Four, suit: .Clubs),
+    Card(power:Power.Five, suit: .Clubs),Card(power:Power.Six, suit: .Clubs),
+    Card(power:Power.Seven, suit: .Clubs),Card(power:Power.Eight, suit: .Clubs),
+    Card(power:Power.Nine, suit: .Clubs),Card(power:Power.Ten, suit: .Clubs),
+    Card(power:Power.Jack, suit: .Clubs),Card(power:Power.Queen, suit: .Clubs),
+    Card(power:Power.King, suit: .Clubs),Card(power:Power.Ace, suit: .Diamonds),
+    Card(power:Power.Two, suit: .Diamonds),Card(power:Power.Three, suit: .Diamonds),
+    Card(power:Power.Four, suit: .Diamonds),Card(power:Power.Five, suit: .Diamonds),
+    Card(power:Power.Six, suit: .Diamonds),Card(power:Power.Seven, suit: .Diamonds),
+    Card(power:Power.Eight, suit: .Diamonds),Card(power:Power.Nine, suit: .Diamonds),
+    Card(power:Power.Ten, suit: .Diamonds),Card(power:Power.Jack, suit: .Diamonds),
+    Card(power:Power.Queen, suit: .Diamonds),Card(power:Power.King, suit: .Diamonds)]
+}
+
+
+
+class Player{
+    var hand: [Card]
+    var cash: Int
+    init(){hand = []; cash = 100}
+    func pay(){
+        cash = cash - 1
+    }
+    
+}
+
+class Dealer{
+    
+    var hand: [Card]
+    var deck: Deck
+    
+    init(){ hand = []; deck = Deck() }
+    
+    func draw() -> Card {
+        var aCard: Card
+        var sizeOfDeck:Int
+        aCard = deck.aDeck.removeAtIndex(random() % deck.aDeck.count)
+        return aCard
+    }
+    func deal(thePlayer:Player){
+        for num in 0...1 {
+            thePlayer.hand.append(draw())
+            hand += [draw()]
+        }
+    }
+}
+
+
+
+func sumOfHand(var aHand:[Card]) -> Int{
+    var sum:Int = 0
+    for card in aHand{
+        sum += card.power.itsPower()
+    }
+    return sum
+}
+
+func check(theDealer: Dealer, thePlayer: Player) {
+    if sumOfHand(thePlayer.hand) > 21{
+        println("Player's hand gone bust")
+    }
+    if sumOfHand(thePlayer.hand) == (sumOfHand(theDealer.hand)){
+        println("Well it seems we have a draw")
+    }
+    if sumOfHand(thePlayer.hand) < (sumOfHand(theDealer.hand)){
+        println("The dealer has won")
+    }
+    if sumOfHand(thePlayer.hand) > (sumOfHand(theDealer.hand)) {
+        println("The player has won")
+    }
+}
+
+func main() -> Int {
+    var numOfGames = 0
+    var newPlayer = Player()
+    var dealer = Dealer()
+    var game = true
+    
+    while game {
+        newPlayer.pay()
+        dealer.deal(newPlayer)
+        check(dealer, newPlayer)
+        newPlayer.hand.removeAll(keepCapacity: false)
+        dealer.hand.removeAll(keepCapacity: false)
+        
+        //couldnt figure out how to cin to the program
+        numOfGames++
+        
+        if numOfGames == 5 {
+            dealer.deck = Deck()
+            numOfGames = 0
+        }
+        
+        if newPlayer.cash == 0 {
+            game = false
+        }
+    }
+    
+    return 1
+}
+
+
+
+main()
